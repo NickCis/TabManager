@@ -56,8 +56,8 @@ function TabManager(id, argDict) {
 	this.container = $(id);
 	var that = this;
 	this.Initialice = function() {
-		this.heads = $$("#"+this.containerId+" "+this.argDict.headTag);
-		this.contents = $$("#"+this.containerId+" "+this.argDict.contentTag);
+		this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
+		this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
 		var ul = '<ul class="'+this.argDict.ulListClass+'">';
 		for (var i=0; i<this.heads.length; i++) {
 			this.heads[i].hide();
