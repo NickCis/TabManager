@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<style>
+			#ul li {
+				display: inline;
+				list-style-type: none;
+				padding-right: 20px;
+			}
+			li.TabManagerActiveTab a {
+				background-color: red;
+			}
+		</style>
+		<script src="prototype1-7.js" language="javascript"></script>
+		<script src="scriptaculous-js-1.9.0/scriptaculous.js" language="javascript"></script>
+		<script src="TabManager.js" language="javascript"></script>
+		<script>
+			Event.observe(window, 'load', function() {
+				//TabManager('tabs', {'listId': 'ul'});
+				var TabSys = $('tabs').TabManager({'listId': 'ul', 'defaultTab': 2});
+				$('buttonprev').observe('click', function() { TabSys.prevTab();});
+				$('button').observe('click', function() { TabSys.showTab(3);});
+				$('buttonnext').observe('click', function() { TabSys.nextTab();});
+				$('buttonlast').observe('click', function() { TabSys.lastTab();});
+			});
+		</script>
+	</head>
+	<body>
+		<input id="buttonprev" value="Previous Tab" type="button"/>
+		<input id="button" value="clickme for tab 4" type="button"/>
+		<input id="buttonnext" value="Next Tab" type="button"/>
+		<input id="buttonlast" value="Last Tab" type="button"/>
+		<span id="ul"></span>
+		<div id='tabs'>
+			<span>title</span>
+			<div>tab 1 contentt</div>
+			<span>title</span>
+			<div>tab 2 contentt</div>
+			<span>title</span>
+			<div>tab 3 contentt</div>
+			<span>title</span>
+			<div>tab 4 contentt</div>
+		</div>
+	</body>
+</html>
