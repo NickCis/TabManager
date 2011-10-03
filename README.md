@@ -33,4 +33,4 @@ See example for further details.
 		 prevTab() show the previous tab (if the first one was seleccted the last is shown)
 		 currentTabIndex() returns the current tab index (the index starts from 0)
 
-
+Licensed under the MIT licence (http://www.opensource.org/licenses/mit-license.php)
