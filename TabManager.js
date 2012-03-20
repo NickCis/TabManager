@@ -54,54 +54,94 @@ function TabManager(id, argDict) {
 		return false;
 	this.containerId = (typeof(id) == 'string') ? id : id.id;
 	this.container = $(id);
-	var that = this;
-	this.Initialice = function() {
-		this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
-		this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
-		var ul = '<ul class="'+this.argDict.ulListClass+'">';
-		for (var i=0; i<this.heads.length; i++) {
-			this.heads[i].hide();
-			ul += '<li indx="'+i+'"><a>'+this.heads[i].innerHTML+'</a></li>';
-		}
-		ul += '</ul>';
-		if (this.argDict.listId){
-			var ulList = $(this.argDict.listId);
-			ulList.update(ul);
-			this.liList = $$('#'+this.argDict.listId+' ul li');
-			for (var i=0 ; i<this.liList.length; i++) {
-				$(this.liList[i]).observe('click', function (evt) {
-						var thisli = Event.element(evt),
-						indx = ( (thisli.getAttribute('indx') != null) ? thisli.getAttribute('indx') : thisli.parentNode.getAttribute('indx') );
-						that.showTab(indx);
-					});
-			}
-		}
-		this.showTab(this.argDict.defaultTab);
-		this.currentTab = this.argDict.defaultTab;
-	}
-	this.showTab = function(indx) {
-		for (var i=0; i<this.contents.length;i++) {
-			if ( i != indx) {
-				this.argDict.hideFunc(this.contents[i]);
-				if (typeof(this.liList) != 'undefined')
-					this.liList[i].removeClassName(this.argDict.tabActiveClass);
-			} else {
-				this.argDict.showFunc(this.contents[i]);
-				if (typeof(this.liList) != 'undefined')
-					this.liList[i].addClassName(this.argDict.tabActiveClass);
-			}
-		}
-		this.currentTab = indx;
-	}
-	this.currentTabIndex = function() {return this.currentTab;}
-	this.lengthTabs = function() {return this.heads.length;}
-	this.nextTab = function () {this.showTab( ( ( this.currentTab < this.lengthTabs()-1) ? this.currentTab +1 : 0));}
-	this.prevTab = function () {this.showTab( ( ( this.currentTab > 0) ? this.currentTab -1 : this.lengthTabs()-1));}
-	this.lastTab = function () {this.showTab(this.lengthTabs() -1);}
 	this.Initialice();
-	return this;
 }
+TabManager.prototype.Initialice = function() {
+	this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
+	this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
+	var that=this;
+	var ul = '<ul class="'+this.argDict.ulListClass+'">';
+	for (var i=0; i<this.heads.length; i++) {
+		this.heads[i].hide();
+		ul += '<li indx="'+i+'"><a>'+this.heads[i].innerHTML+'</a></li>';
+	}
+	ul += '</ul>';
+	if (this.argDict.listId){
+		var ulList = $(this.argDict.listId);
+		ulList.update(ul);
+		this.liList = $$('#'+this.argDict.listId+' ul li');
+		for (var i=0 ; i<this.liList.length; i++) {
+			$(this.liList[i]).observe('click', function (evt) {
+				var thisli = Event.element(evt),
+				indx = ( (thisli.getAttribute('indx') != null) ? thisli.getAttribute('indx') : thisli.parentNode.getAttribute('indx') );
+				that.showTab(indx);
+			});
+		}
+	}
+	this.showTab(this.argDict.defaultTab);
+	this.currentTab = this.argDict.defaultTab;
+}
+TabManager.prototype.showTab = function(indx) {
+	for (var i=0; i<this.contents.length;i++) {
+		if ( i != indx) {
+			this.argDict.hideFunc(this.contents[i]);
+			if (typeof(this.liList) != 'undefined')
+				this.liList[i].removeClassName(this.argDict.tabActiveClass);
+		} else {
+			this.argDict.showFunc(this.contents[i]);
+			if (typeof(this.liList) != 'undefined')
+				this.liList[i].addClassName(this.argDict.tabActiveClass);
+		}
+	}
+	this.currentTab = indx;
+}
+TabManager.prototype.currentTabIndex = function() {return this.currentTab;}
+TabManager.prototype.lengthTabs = function() {return this.heads.length;}
+TabManager.prototype.nextTab = function () {this.showTab( ( ( this.currentTab < this.lengthTabs()-1) ? this.currentTab +1 : 0));}
+TabManager.prototype.prevTab = function () {this.showTab( ( ( this.currentTab > 0) ? this.currentTab -1 : this.lengthTabs()-1));}
+TabManager.prototype.lastTab = function () {this.showTab(this.lengthTabs() -1);}
+TabManager.prototype.addTab = function(title, content, id) {
+	var li = document.createElement('li'),
+		span = document.createElement(this.argDict.headTag).setStyle({'display': 'none'}).update(title),
+		cont= document.createElement(this.argDict.contentTag).update(content).setStyle({'display': 'none'}),
+		ulList = $$("#"+this.argDict.listId+" ul"),
+		that = this;
+	li.update("<a>"+title+"</a>").setAttribute('indx', this.lengthTabs());;
+	if (id) {
+		cont.id = id;
+	}
+	$(this.containerId).appendChild(span);
+	$(this.containerId).appendChild(cont);
+	if (ulList.length > 0) {
+		$(li).observe('click', function (evt) {
+			var thisli = Event.element(evt),
+			indx = ( (thisli.getAttribute('indx') != null) ? thisli.getAttribute('indx') : thisli.parentNode.getAttribute('indx') );
+			that.showTab(indx);
+		});
+		$(ulList[0]).appendChild(li);
+		this.liList = $$('#'+this.argDict.listId+' ul li');
+	}
+	this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
+	this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
+	li = null;
+	cont = null;
+	ulList = null;
+}
+TabManager.prototype.delTab = function(indx) {
+	if (this.currentTab == indx)
+		this.nextTab();
+	if (this.heads[indx])
+		this.heads[indx].parentNode.removeChild(this.heads[indx]);
+	if (this.contents[indx])
+		this.contents[indx].parentNode.removeChild(this.contents[indx]);
+	var thisLi = $$("#"+this.argDict.listId+" ul > li")[indx];
+	if (thisLi)
+		thisLi.parentNode.removeChild(thisLi);
+	this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
+	this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
+}
+
 // Extend Prototype
 Element.addMethods({
-	'TabManager': TabManager
+	'TabManager': function() { new TabManager(arguments[0], arguments[1])}
 	});
