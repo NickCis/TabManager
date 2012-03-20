@@ -129,7 +129,7 @@ TabManager.prototype.addTab = function(title, content, id) {
 }
 TabManager.prototype.delTab = function(indx) {
 	if (this.currentTab == indx)
-		this.nextTab();
+		this.prevTab();
 	if (this.heads[indx])
 		this.heads[indx].parentNode.removeChild(this.heads[indx]);
 	if (this.contents[indx])
@@ -137,6 +137,12 @@ TabManager.prototype.delTab = function(indx) {
 	var thisLi = $$("#"+this.argDict.listId+" ul > li")[indx];
 	if (thisLi)
 		thisLi.parentNode.removeChild(thisLi);
+	var thisLis = $$("#"+this.argDict.listId+" ul > li");
+	for (var i=0; i<thisLis.length; i++) {
+		if (!thisLis[i])
+			break;
+		thisLis[i].setAttribute('indx', i);
+	}
 	this.heads = $$("#"+this.containerId+" > "+this.argDict.headTag);
 	this.contents = $$("#"+this.containerId+" > "+this.argDict.contentTag);
 }
